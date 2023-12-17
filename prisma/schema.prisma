@@ -13,6 +13,26 @@ datasource db {
 model Product {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   name String
+  sizes ProductSize[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Size {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  products ProductSize[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model ProductSize {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String @db.ObjectId
+  sizeId    String @db.ObjectId
+  product   Product  @relation(fields: [productId], references: [id])
+  size      Size     @relation(fields: [sizeId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
