@@ -7,6 +7,7 @@ export async function GET(request: Request) {
     });
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error: any) {
+    console.log(error);
     return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }
