@@ -20,15 +20,15 @@ const mapSizes = (sizeIds: string[]) => {
   });
 };
 
-const mapColors = (colorIds: string[]) => {
-  return colorIds.map((colorId) => {
-    return { color: { connect: { id: colorId } } };
+const mapColors = (values: Record<string, any>[]) => {
+  return values.map((value) => {
+    return { color: { connect: { id: value.id } }, images: value.images };
   });
 };
 // Usage
 export async function POST(request: Request) {
   try {
-    const { name, sizeIds, colorIds, images } = await request.json();
+    const { name, sizeIds, colorIds, images, newColors } = await request.json();
 
     if (!name) {
       return new Response(JSON.stringify("error"), { status: 400 });
@@ -39,11 +39,12 @@ export async function POST(request: Request) {
     if (!colorIds) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
+    if (!newColors) {
+      return new Response(JSON.stringify("error"), { status: 400 });
+    }
 
     const sizes = mapSizes(sizeIds);
-    const colors = mapColors(colorIds);
-    console.log(sizes, colors);
-
+    const colors = mapColors(newColors);
     const product = await prisma.product.create({
       data: {
         name: name,
@@ -55,7 +56,6 @@ export async function POST(request: Request) {
         },
       },
     });
-    console.log(product);
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {
     console.log("error is", error);
@@ -78,6 +78,7 @@ export async function DELETE(request: Request) {
     });
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error: any) {
+    console.log(error);
     return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }

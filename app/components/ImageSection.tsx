@@ -17,13 +17,12 @@ export const ImageSection: React.FC<ImageSectionProps> = ({
   const handleClick = () => {
     setImages((prev) => ({
       ...prev,
-      id: colorId,
-      images: [imageOne, imageTwo, imageThree],
+      [colorId]: [imageOne, imageTwo, imageThree],
     }));
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 text-black">
       <input
         value={imageOne}
         onChange={(e) => setImageOne(e.target.value)}
@@ -48,6 +47,7 @@ export const ImageSection: React.FC<ImageSectionProps> = ({
           e.stopPropagation();
           handleClick();
         }}
+        className="p-2 rounded-md bg-neutral-700"
       >
         Upload
       </button>
