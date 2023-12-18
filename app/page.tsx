@@ -7,6 +7,8 @@ import {
   Size,
 } from "@prisma/client";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { SizeSection } from "./components/SizeSection";
+import { ColorSection } from "./components/ColorSection";
 
 type SizeChild = ProductSize & {
   size: Size;
@@ -27,7 +29,6 @@ export default function Home() {
   const [sizes, setSizes] = useState([]);
   const [colors, setColors] = useState([]);
   const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
   const [sizeIds, setSizeIds] = useState<string[] | []>([]);
   const [colorIds, setColorIds] = useState<string[] | []>([]);
 
@@ -57,32 +58,15 @@ export default function Home() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log(sizeIds, colorIds);
+    const images = ["a", "a", "a"];
     const response = await fetch("/api/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, sizeIds, colorIds }),
+      body: JSON.stringify({ name, sizeIds, colorIds, images }),
     });
     console.log(response);
   };
 
-  const handleSizeSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    await fetch("/api/size", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ size }),
-    });
-  };
-  const handleColorSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    await fetch("/api/color", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ color }),
-    });
-  };
   const handleSizeChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setSizeIds((prevSelected) => [...prevSelected, e.target.value]);
@@ -108,8 +92,12 @@ export default function Home() {
     });
   };
   return (
-    <main className="bg-gray-500 min-h-screen flex justify-between gap-2 p-24">
-      <div className="flex flex-col gap-2 w-[50%] h-full">
+    <main className="bg-gray-500 min-h-screen flex flex-col gap-2 p-24">
+      <div className="flex justify-between w-full ">
+        <SizeSection sizes={sizes} />
+        <ColorSection colors={colors} />
+      </div>
+      <div className="flex flex-col gap-5">
         <form className="flex flex-col gap-2 ">
           <input
             value={name}
@@ -166,34 +154,6 @@ export default function Home() {
               <button onClick={() => handleDelete(product.id)}>DELETE</button>
             </div>
           ))}
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 w-[50%] h-full items-center ">
-        <form className="flex flex-col gap-2">
-          <input
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
-            placeholder="size..."
-            className="p-2 rounded-md text-black "
-          />
-          <button onClick={handleSizeSubmit}>Add</button>
-        </form>
-        <div>
-          {sizes?.map((size: Size) => <h1 key={size.id}>{size.name}</h1>)}
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 w-[50%] h-full items-center">
-        <form className="flex flex-col gap-2">
-          <input
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            placeholder="size..."
-            className="p-2 rounded-md text-black "
-          />
-          <button onClick={handleColorSubmit}>Add</button>
-        </form>
-        <div>
-          {colors?.map((color: Color) => <h1 key={color.id}>{color.name}</h1>)}
         </div>
       </div>
     </main>

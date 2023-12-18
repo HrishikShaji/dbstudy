@@ -28,7 +28,7 @@ const mapColors = (colorIds: string[]) => {
 // Usage
 export async function POST(request: Request) {
   try {
-    const { name, sizeIds, colorIds } = await request.json();
+    const { name, sizeIds, colorIds, images } = await request.json();
 
     if (!name) {
       return new Response(JSON.stringify("error"), { status: 400 });
@@ -43,6 +43,7 @@ export async function POST(request: Request) {
     const sizes = mapSizes(sizeIds);
     const colors = mapColors(colorIds);
     console.log(sizes, colors);
+
     const product = await prisma.product.create({
       data: {
         name: name,

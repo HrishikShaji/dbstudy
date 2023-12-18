@@ -46,6 +46,7 @@ model ProductSize {
 
 model ProductColor {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  images    String[]
   productId String @db.ObjectId
   product   Product  @relation(fields: [productId], references: [id])
   colorId    String @db.ObjectId
