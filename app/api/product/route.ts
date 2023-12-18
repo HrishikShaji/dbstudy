@@ -4,7 +4,8 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.product.findMany({
       include: {
-        entries: true,
+        colors: { include: { color: true } },
+        sizes: { include: { size: true } },
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
@@ -24,6 +25,7 @@ const mapColors = (colorIds: string[]) => {
     return { color: { connect: { id: colorId } } };
   });
 };
+// Usage
 export async function POST(request: Request) {
   try {
     const { name, sizeIds, colorIds } = await request.json();
@@ -40,12 +42,15 @@ export async function POST(request: Request) {
 
     const sizes = mapSizes(sizeIds);
     const colors = mapColors(colorIds);
-    console.log([...sizes, ...colors]);
+    console.log(sizes, colors);
     const product = await prisma.product.create({
       data: {
         name: name,
-        entries: {
-          create: [...sizes, ...colors],
+        sizes: {
+          create: sizes,
+        },
+        colors: {
+          create: colors,
         },
       },
     });

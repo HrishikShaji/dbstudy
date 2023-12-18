@@ -1,6 +1,25 @@
 "use client";
-import { Color, Product, Size } from "@prisma/client";
+import {
+  Color,
+  Product,
+  ProductColor,
+  ProductSize,
+  Size,
+} from "@prisma/client";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+
+type SizeChild = ProductSize & {
+  size: Size;
+};
+
+type ColorChild = ProductColor & {
+  color: Color;
+};
+
+type ProductChild = Product & {
+  sizes: SizeChild[];
+  colors: ColorChild[];
+};
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -49,7 +68,7 @@ export default function Home() {
   const handleSizeSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const response = await fetch("/api/size", {
+    await fetch("/api/size", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ size }),
@@ -58,7 +77,7 @@ export default function Home() {
   const handleColorSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const response = await fetch("/api/color", {
+    await fetch("/api/color", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ color }),
@@ -83,7 +102,7 @@ export default function Home() {
     }
   };
   const handleDelete = async (id: string) => {
-    const response = await fetch(`/api/product?id=${id}`, {
+    await fetch(`/api/product?id=${id}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
@@ -131,9 +150,19 @@ export default function Home() {
           <button onClick={handleSubmit}>Add</button>
         </form>
         <div>
-          {products?.map((product: Product) => (
+          {products?.map((product: ProductChild) => (
             <div className="flex w-full justify-between" key={product.id}>
               <h1 key={product.id}>{product.name}</h1>
+              <div className="flex flex-col gap-2">
+                {product.sizes.map((size) => (
+                  <h1 key={size.id}>{size.size.name}</h1>
+                ))}
+              </div>
+              <div className="flex flex-col gap-2">
+                {product.colors.map((color) => (
+                  <h1 key={color.id}>{color.color.name}</h1>
+                ))}
+              </div>
               <button onClick={() => handleDelete(product.id)}>DELETE</button>
             </div>
           ))}
