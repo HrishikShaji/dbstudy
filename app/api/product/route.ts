@@ -4,7 +4,7 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.product.findMany({
       include: {
-        sizes: true,
+        entries: true,
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
@@ -19,29 +19,40 @@ const mapSizes = (sizeIds: string[]) => {
   });
 };
 
+const mapColors = (colorIds: string[]) => {
+  return colorIds.map((colorId) => {
+    return { color: { connect: { id: colorId } } };
+  });
+};
 export async function POST(request: Request) {
   try {
-    const { name, sizeIds } = await request.json();
+    const { name, sizeIds, colorIds } = await request.json();
 
-    const values = mapSizes(sizeIds);
-    console.log(name, values);
     if (!name) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
     if (!sizeIds) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
+    if (!colorIds) {
+      return new Response(JSON.stringify("error"), { status: 400 });
+    }
 
-    await prisma.product.create({
+    const sizes = mapSizes(sizeIds);
+    const colors = mapColors(colorIds);
+    console.log([...sizes, ...colors]);
+    const product = await prisma.product.create({
       data: {
         name: name,
-        sizes: {
-          create: values,
+        entries: {
+          create: [...sizes, ...colors],
         },
       },
     });
+    console.log(product);
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {
+    console.log("error is", error);
     return new Response(JSON.stringify(error.message), { status: 500 });
   }
 }
