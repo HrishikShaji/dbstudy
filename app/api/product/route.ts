@@ -45,6 +45,7 @@ export async function POST(request: Request) {
 
     const sizes = mapSizes(sizeIds);
     const colors = mapColors(newColors);
+
     const product = await prisma.product.create({
       data: {
         name: name,
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
         },
       },
     });
+
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {
     console.log("error is", error);

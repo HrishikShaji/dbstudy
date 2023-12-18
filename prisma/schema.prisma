@@ -6,13 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Product {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
+id   Int                   @id @default(autoincrement())  
+name String
   sizes ProductSize[]
   colors ProductColor[]
   entries ProductEntry[]
@@ -21,7 +21,7 @@ model Product {
 }
 
 model Size {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+id   Int                   @id @default(autoincrement())  
   name      String
   products ProductSize[]
   entries  ProductEntry[]
@@ -30,7 +30,7 @@ model Size {
 }
 
 model Color {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+id   Int                   @id @default(autoincrement())  
   name      String
   products ProductColor[]
   entries ProductEntry[]
@@ -38,21 +38,21 @@ model Color {
   updatedAt DateTime   @updatedAt
 }
 model ProductSize {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId String @db.ObjectId
+id   Int                   @id @default(autoincrement())  
+  productId Int 
   product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  sizeId    String @db.ObjectId
+  sizeId    Int 
   size      Size     @relation(fields: [sizeId], references: [id],onDelete:Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model ProductColor {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+id   Int                   @id @default(autoincrement())  
   images    String[]
-  productId String @db.ObjectId
+  productId Int 
   product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  colorId    String @db.ObjectId
+  colorId    Int 
   color      Color     @relation(fields: [colorId], references: [id],onDelete:Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,12 +60,12 @@ model ProductColor {
 
 model ProductEntry {
 
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+id   Int                   @id @default(autoincrement())  
   images    String[]
-  productId String @db.ObjectId
+  productId Int 
   product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  colorId    String @db.ObjectId
+  colorId    Int  
   color      Color     @relation(fields: [colorId], references: [id],onDelete:Cascade)
-  sizeId    String @db.ObjectId
+  sizeId    Int 
   size      Size     @relation(fields: [sizeId], references: [id],onDelete:Cascade)
 }
