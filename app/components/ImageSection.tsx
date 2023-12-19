@@ -3,26 +3,20 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface ImageSectionProps {
-  colorId: string;
-  setImages: Dispatch<SetStateAction<Record<string, any>[]>>;
+  setImages: Dispatch<SetStateAction<string[]>>;
 }
 
-export const ImageSection: React.FC<ImageSectionProps> = ({
-  setImages,
-  colorId,
-}) => {
+export const ImageSection: React.FC<ImageSectionProps> = ({ setImages }) => {
   const [imageOne, setImageOne] = useState("");
   const [imageTwo, setImageTwo] = useState("");
   const [imageThree, setImageThree] = useState("");
   const handleClick = () => {
-    setImages((prev) => ({
-      ...prev,
-      [colorId]: [imageOne, imageTwo, imageThree],
-    }));
+    setImages([imageThree, imageTwo, imageOne]);
   };
 
   return (
-    <div className="flex gap-2 text-black">
+    <div className="flex gap-2 text-black flex-col">
+      <h1 className="text-2xl font-semibold text-white">Select Images</h1>
       <input
         value={imageOne}
         onChange={(e) => setImageOne(e.target.value)}

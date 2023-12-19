@@ -17,7 +17,7 @@ export const SizeInput: React.FC<SizeInputProps> = ({ sizes, setSizeIds }) => {
     }
   };
   return (
-    <div className="flex flex-1 flex-col gap-4">
+    <div className="flex  flex-col gap-4">
       <h1 className="text-2xl font-semibold">Select Size</h1>
       {sizes?.map((size: Size, i) => (
         <div key={size.id} className="flex flex-col gap-2">

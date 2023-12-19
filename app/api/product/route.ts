@@ -4,8 +4,7 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.product.findMany({
       include: {
-        colors: true,
-        sizes: true,
+        variants: true,
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
@@ -39,18 +38,6 @@ export async function POST(request: Request) {
 
     const sizes = mapSizes(sizeIds);
     const colors = mapColors(newColors);
-
-    const product = await prisma.product.create({
-      data: {
-        name: name,
-        colors: {
-          connect: { id: 1 },
-        },
-        sizes: {
-          connect: { id: 1 },
-        },
-      },
-    });
 
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {

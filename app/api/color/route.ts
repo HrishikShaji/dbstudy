@@ -3,7 +3,7 @@ import prisma from "@/app/lib/connect";
 export async function GET(request: Request) {
   try {
     const data = await prisma.color.findMany({
-      include: { products: true },
+      include: { variants: true },
     });
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error: any) {
