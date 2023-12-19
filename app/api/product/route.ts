@@ -4,8 +4,8 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.product.findMany({
       include: {
-        colors: { include: { color: true } },
-        sizes: { include: { size: true } },
+        colors: true,
+        sizes: true,
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
@@ -16,13 +16,16 @@ export async function GET(request: Request) {
 
 const mapSizes = (sizeIds: string[]) => {
   return sizeIds.map((sizeId) => {
-    return { size: { connect: { id: sizeId } } };
+    return { size: { connect: { id: Number(sizeId) } } };
   });
 };
 
 const mapColors = (values: Record<string, any>[]) => {
   return values.map((value) => {
-    return { color: { connect: { id: value.id } }, images: value.images };
+    return {
+      color: { connect: { id: Number(value.id) } },
+      images: value.images,
+    };
   });
 };
 // Usage
@@ -30,16 +33,7 @@ export async function POST(request: Request) {
   try {
     const { name, sizeIds, colorIds, images, newColors } = await request.json();
 
-    if (!name) {
-      return new Response(JSON.stringify("error"), { status: 400 });
-    }
-    if (!sizeIds) {
-      return new Response(JSON.stringify("error"), { status: 400 });
-    }
-    if (!colorIds) {
-      return new Response(JSON.stringify("error"), { status: 400 });
-    }
-    if (!newColors) {
+    if (!name || !sizeIds || !colorIds || !newColors) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
 
@@ -49,11 +43,11 @@ export async function POST(request: Request) {
     const product = await prisma.product.create({
       data: {
         name: name,
-        sizes: {
-          create: sizes,
-        },
         colors: {
-          create: colors,
+          connect: { id: 1 },
+        },
+        sizes: {
+          connect: { id: 1 },
         },
       },
     });
@@ -68,7 +62,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const id = Number(searchParams.get("id"));
     if (!id) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }

@@ -13,18 +13,26 @@ datasource db {
 model Product {
 id   Int                   @id @default(autoincrement())  
 name String
-  sizes ProductSize[]
-  colors ProductColor[]
-  entries ProductEntry[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  variants Variant[] 
+}
+
+model Variant {
+
+id   Int                   @id @default(autoincrement()) 
+sizeId Int
+size Size @relation(fields: [sizeId],references: [id],onDelete: Cascade)
+colorId Int
+color Color @relation(fields: [colorId],references: [id],onDelete: Cascade)
+productId Int
+product Product @relation(fields: [productId],references: [id],onDelete: Cascade)
 }
 
 model Size {
 id   Int                   @id @default(autoincrement())  
   name      String
-  products ProductSize[]
-  entries  ProductEntry[]
+  variants  Variant[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -32,40 +40,7 @@ id   Int                   @id @default(autoincrement())
 model Color {
 id   Int                   @id @default(autoincrement())  
   name      String
-  products ProductColor[]
-  entries ProductEntry[]
+  variants  Variant[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-}
-model ProductSize {
-id   Int                   @id @default(autoincrement())  
-  productId Int 
-  product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  sizeId    Int 
-  size      Size     @relation(fields: [sizeId], references: [id],onDelete:Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ProductColor {
-id   Int                   @id @default(autoincrement())  
-  images    String[]
-  productId Int 
-  product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  colorId    Int 
-  color      Color     @relation(fields: [colorId], references: [id],onDelete:Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ProductEntry {
-
-id   Int                   @id @default(autoincrement())  
-  images    String[]
-  productId Int 
-  product   Product  @relation(fields: [productId], references: [id],onDelete:Cascade)
-  colorId    Int  
-  color      Color     @relation(fields: [colorId], references: [id],onDelete:Cascade)
-  sizeId    Int 
-  size      Size     @relation(fields: [sizeId], references: [id],onDelete:Cascade)
 }
