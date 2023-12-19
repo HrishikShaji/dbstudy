@@ -1,45 +1,49 @@
 import { FormEvent, useState } from "react";
 import { useGetProducts } from "../hooks/useGetProducts";
-import { ColorInput } from "./ColorInput";
 import { ProductDetails } from "./ProductDetails";
-import { SizeInput } from "./SizeInput";
-import { ImageSection } from "./ImageSection";
+import { VariantSection } from "./VariantSection";
 
 export const ProductForm = () => {
+  const { products } = useGetProducts();
+  const [noOfVariants, setNoOfVariants] = useState(1);
+  const [variants, setVariants] = useState<any[]>([]);
   const [name, setName] = useState("");
-  const { products, sizes, colors } = useGetProducts();
-  const [sizeIds, setSizeIds] = useState<string[] | []>([]);
-  const [colorIds, setColorIds] = useState<string[] | []>([]);
-  const [images, setImages] = useState<string[]>([]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(name, sizeIds, colorIds, images);
 
-    const newColors = colorIds.map((colorId) => {
-      return { id: colorId, images: images[colorId as any] };
-    });
-    await fetch("/api/product", {
+    const response = await fetch("/api/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, sizeIds, colorIds, images, newColors }),
+      body: JSON.stringify({ name, variants }),
     });
+    console.log(response);
   };
+
   return (
     <div className="flex flex-col gap-5 w-full">
-      <form className="flex flex-col gap-4 ">
+      <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="name..."
           className="p-2 rounded-md text-black "
         />
-        <div className="flex justify-around">
-          <ColorInput colors={colors} setColorIds={setColorIds} />
-          <SizeInput sizes={sizes} setSizeIds={setSizeIds} />
-          <ImageSection setImages={setImages} />
-        </div>
-        <button onClick={handleSubmit}>Add</button>
+        <button
+          type="button"
+          className="bg-neutral-600 rounded-md p-2"
+          onClick={() => setNoOfVariants((prev) => prev + 1)}
+        >
+          Add Variant
+        </button>
+        {Array.from({ length: noOfVariants }).map((_, i) => (
+          <div key={i} className="flex gap-10 justify-between">
+            <VariantSection setVariants={setVariants} />
+          </div>
+        ))}
+        <button className="p-2 rounded-md bg-neutral-700" type="submit">
+          Add Product
+        </button>
       </form>
       <div>
         {products?.map((product: any) => (

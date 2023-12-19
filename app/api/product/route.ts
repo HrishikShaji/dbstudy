@@ -30,14 +30,12 @@ const mapColors = (values: Record<string, any>[]) => {
 // Usage
 export async function POST(request: Request) {
   try {
-    const { name, sizeIds, colorIds, images, newColors } = await request.json();
+    const { name, variants } = await request.json();
 
-    if (!name || !sizeIds || !colorIds || !newColors) {
+    if (!name || !variants) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
-
-    const sizes = mapSizes(sizeIds);
-    const colors = mapColors(newColors);
+    console.log(name, variants);
 
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {
