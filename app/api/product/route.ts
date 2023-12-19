@@ -4,7 +4,12 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.product.findMany({
       include: {
-        variants: true,
+        variants: {
+          include: {
+            size: true,
+            color: true,
+          },
+        },
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
@@ -36,6 +41,17 @@ export async function POST(request: Request) {
       return new Response(JSON.stringify("error"), { status: 400 });
     }
     console.log(name, variants);
+
+    const product = await prisma.product.create({
+      data: {
+        name: name,
+        variants: {
+          create: variants,
+        },
+      },
+    });
+
+    console.log(product);
 
     return new Response(JSON.stringify("succeess"), { status: 200 });
   } catch (error: any) {

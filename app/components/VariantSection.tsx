@@ -19,7 +19,7 @@ export const VariantSection: React.FC<VariantSectionProps> = ({
     console.log(sizeIds, colorIds, images);
     setVariants((prev) => [
       ...prev,
-      { sizes: sizeIds, colors: colorIds, images: images },
+      { sizeId: parseInt(sizeIds[0]), colorId: parseInt(colorIds[0]) },
     ]);
   };
   return (

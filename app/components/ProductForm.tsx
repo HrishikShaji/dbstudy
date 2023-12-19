@@ -11,7 +11,7 @@ export const ProductForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+    console.log(variants);
     const response = await fetch("/api/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
