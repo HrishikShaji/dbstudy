@@ -1,35 +1,28 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { useGetProducts } from "../hooks/useGetProducts";
-import { ColorInput } from "./ColorInput";
-import { ImageSection } from "./ImageSection";
-import { SizeInput } from "./SizeInput";
+import { InputFile } from "./InputFile";
 
 interface VariantSectionProps {
   setVariants: Dispatch<SetStateAction<any[]>>;
+  index: number;
 }
 
 export const VariantSection: React.FC<VariantSectionProps> = ({
   setVariants,
+  index,
 }) => {
-  const { colors, sizes } = useGetProducts();
-  const [sizeIds, setSizeIds] = useState<string[] | []>([]);
-  const [colorIds, setColorIds] = useState<string[] | []>([]);
-  const [images, setImages] = useState<string[]>([]);
-  const addVariant = () => {
-    console.log(sizeIds, colorIds, images);
-    setVariants((prev) => [
-      ...prev,
-      { sizeId: parseInt(sizeIds[0]), colorId: parseInt(colorIds[0]) },
-    ]);
+  const [images, setImages] = useState<FileList | null>(null);
+  const onImageSelect = (images: FileList | null) => {
+    setImages(images);
   };
   return (
     <div className="flex justify-between w-full">
-      <ColorInput colors={colors} setColorIds={setColorIds} />
-      <SizeInput sizes={sizes} setSizeIds={setSizeIds} />
-      <ImageSection setImages={setImages} />
-      <button onClick={addVariant} type="button">
-        Add
-      </button>
+      <InputFile
+        id={`variant-${index}`}
+        fileList={[]}
+        onChange={onImageSelect}
+      />
+      {images?.length}
+      <button type="button">Add</button>
     </div>
   );
 };

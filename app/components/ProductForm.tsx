@@ -11,13 +11,11 @@ export const ProductForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(variants);
     const response = await fetch("/api/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, variants }),
     });
-    console.log(response);
   };
 
   return (
@@ -38,7 +36,7 @@ export const ProductForm = () => {
         </button>
         {Array.from({ length: noOfVariants }).map((_, i) => (
           <div key={i} className="flex gap-10 justify-between">
-            <VariantSection setVariants={setVariants} />
+            <VariantSection index={i} setVariants={setVariants} />
           </div>
         ))}
         <button className="p-2 rounded-md bg-neutral-700" type="submit">

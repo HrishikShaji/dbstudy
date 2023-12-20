@@ -10,7 +10,6 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     });
   };
 
-  console.log(product);
   return (
     <div className="flex bg-neutral-800 p-1 rounded-md w-full items-center justify-around">
       <h1 key={product.id}>{product.name}</h1>
